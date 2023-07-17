@@ -1,19 +1,18 @@
 package com.ticket_booking_app.controller;
 
-import com.ticket_booking_app.model.Movie;
+import com.ticket_booking_app.DTO.ReservationRequestGuestDTO;
+import com.ticket_booking_app.DTO.view.MovieRepertoireView;
+import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.Reservation;
-import com.ticket_booking_app.model.ReservationRequest;
-import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.service.IBooking;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/api")
 public class TicketBookingController {
@@ -23,21 +22,27 @@ public class TicketBookingController {
         this.ticketBookingService = ticketBookingService;
     }
 
-    @GetMapping("/movies")
-    public List<Movie> getMoviesByDateTime(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDateTime date,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime time) {
+    @GetMapping("/movies/{date}")
+    public List<MovieRepertoireView>  getMoviesByDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate date) {
+        return ticketBookingService.getMoviesByDate(date);
+    }
+    @GetMapping("/movies/{date}/{time}")
+    public List<MovieRepertoireView>  getMoviesByDateTime(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate date,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) final LocalTime time) {
         return ticketBookingService.getMoviesByDateTime(date, time);
     }
 
-    @GetMapping("/booking/info/{movieId}/{screeningId}")
-    public Screening getScreeningInfoForMovie(@PathVariable final int movieId, @PathVariable final int screeningId) {
-        return ticketBookingService.getScreeningInfo(movieId, screeningId);
+    @GetMapping("/booking/info/{screeningId}")
+    public MovieScreeningInfoView getScreening(@PathVariable final int screeningId) {
+        return ticketBookingService.getMovieScreeningInfo(screeningId);
     }
 
-    @PostMapping("/booking/reservation")
-    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest) {
-        return ticketBookingService.createReservation(reservationRequest);
+    @PostMapping("/booking/reservation/guest")
+    @ResponseBody
+    public Reservation createReservation(@RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
+        return ticketBookingService.createReservation(reservationRequestGuestDTO);
     }
 
 }
