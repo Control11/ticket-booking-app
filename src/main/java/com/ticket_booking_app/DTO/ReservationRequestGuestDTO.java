@@ -2,7 +2,7 @@ package com.ticket_booking_app.DTO;
 
 import com.ticket_booking_app.model.Customer;
 import com.ticket_booking_app.model.Seat;
-import com.ticket_booking_app.utils.TicketType;
+import com.ticket_booking_app.model.utils.TicketType;
 import lombok.Data;
 
 import java.time.Instant;

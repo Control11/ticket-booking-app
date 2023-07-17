@@ -1,4 +1,4 @@
-package com.ticket_booking_app.utils;
+package com.ticket_booking_app.model.utils;
 
 import lombok.ToString;
 
