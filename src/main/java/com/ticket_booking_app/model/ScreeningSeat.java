@@ -1,6 +1,7 @@
 package com.ticket_booking_app.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ticket_booking_app.model.utils.SeatStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,5 +21,6 @@ public class ScreeningSeat {
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private SeatStatus status;
 }
