@@ -5,6 +5,7 @@ import com.ticket_booking_app.DTO.view.MovieRepertoireView;
 import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.Reservation;
 import com.ticket_booking_app.service.IBooking;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class TicketBookingController {
-    private IBooking ticketBookingService;
+    private final IBooking ticketBookingService;
 
     public TicketBookingController(@Qualifier("ticketBookingService") final IBooking ticketBookingService) {
         this.ticketBookingService = ticketBookingService;
@@ -41,7 +42,7 @@ public class TicketBookingController {
 
     @PostMapping("/booking/reservation/guest")
     @ResponseBody
-    public Reservation createReservation(@RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
+    public Reservation createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
         return ticketBookingService.createReservation(reservationRequestGuestDTO);
     }
 
