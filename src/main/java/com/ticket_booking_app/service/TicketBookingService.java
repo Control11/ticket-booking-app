@@ -17,9 +17,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Getter
@@ -60,7 +59,7 @@ public class TicketBookingService implements IBooking {
             tickets.add(ticketRepository.findByType(ticketType.name()));
         }
 
-        seatStatusOperation(screening.getScreeningSeat(), seats);
+        seatsOperations(screening.getScreeningSeat(), seats);
 
         Customer customer = customerRepository.save(reservationRequestGuestDTO.getCustomer());
         Screening screeningUpdated = screeningRepository.save(screening);
@@ -75,20 +74,51 @@ public class TicketBookingService implements IBooking {
         return reservationRepository.save(reservation);
     }
 
-    private static void seatStatusOperation(List<ScreeningSeat> screeningSeats, List<Seat> seats) {
+
+    private static void seatsOperations(List<ScreeningSeat> screeningSeats, List<Seat> seats) {
         seats.forEach(seat -> seat.setRow(seat.getRow().toUpperCase(Locale.ROOT).trim()));
 
+        HashMap<Seat, SeatStatus> seatAndStatus = new HashMap<>();
+        screeningSeats.forEach(screeningSeat -> seatAndStatus.put(screeningSeat.getSeat(), screeningSeat.getStatus()));
+        validateSeatLocation(seatAndStatus, seats);
+
         for (Seat seat : seats) {
-            for (ScreeningSeat screeningSeat : screeningSeats) {
-                if (seat.equals(screeningSeat.getSeat())) {
-                    if (SeatStatus.AVAILABLE.toString().equalsIgnoreCase(screeningSeat.getStatus())) {
-                        screeningSeat.setStatus(SeatStatus.RESERVED.name());
-                    } else {
-                        throw new RuntimeException("This seat is already reserved/bought: " + screeningSeat.getSeat());
-                    }
-                    break;
+            screeningSeats.stream()
+                    .filter(screeningSeat -> seat.equals(screeningSeat.getSeat()))
+                    .forEach(TicketBookingService::changeSeatStatus);
+        }
+    }
+
+    private static void changeSeatStatus(ScreeningSeat screeningSeat) {
+        if (screeningSeat.getStatus().equals(SeatStatus.AVAILABLE)) {
+            screeningSeat.setStatus(SeatStatus.RESERVED);
+        } else {
+            throw new RuntimeException("This seat is already reserved/bought: " + screeningSeat.getSeat());
+        }
+    }
+
+    private static void validateSeatLocation(HashMap<Seat, SeatStatus> seatAndStatus, List<Seat> seats) {
+        Set<String> rowsInReservation = new HashSet<>();
+        seats.forEach(seat -> rowsInReservation.add(seat.getRow()));
+
+        for (String row : rowsInReservation) {
+            Set<Seat> seatInRow = seats.stream()
+                    .filter(seat -> seat.getRow().equals(row))
+                    .collect(Collectors.toSet());
+
+            for (Seat seat : seatInRow) {
+                boolean isValid = seatAndStatus.entrySet().stream()
+                        .filter(entry -> entry.getKey().getRow().equals(row))
+                        .filter(entry -> entry.getKey().getNumber() == seat.getNumber() + 1 ||
+                                entry.getKey().getNumber() == seat.getNumber() - 1)
+                        .allMatch(entry -> entry.getValue().equals(SeatStatus.AVAILABLE));
+
+                if (!isValid) {
+                    throw new RuntimeException("There cannot be a single place left over in a row between two already reserved places: " + seat);
                 }
+
             }
         }
     }
+
 }
