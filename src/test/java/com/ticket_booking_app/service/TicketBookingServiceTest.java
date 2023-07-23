@@ -31,15 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TicketBookingServiceTest {
     @Mock
-    private MovieRepository movieRepository;
-    @Mock
-    private ReservationRepository reservationRepository;
-    @Mock
     private ScreeningRepository screeningRepository;
-    @Mock
-    private CustomerRepository customerRepository;
-    @Mock
-    private TicketRepository ticketRepository;
     @InjectMocks
     private TicketBookingService ticketBookingService;
     private ReservationRequestGuestDTO reservationRequestGuestDTO;
@@ -211,10 +203,9 @@ class TicketBookingServiceTest {
 
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(screeningDB));
-        when(screeningRepository.save(any(Screening.class))).thenReturn(screeningDB);
-        Screening screeningAfterChange = ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
+        ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
 
-        assertEquals(screeningExpected, screeningAfterChange);
+        assertEquals(screeningExpected, screeningDB);
     }
 
     @Test

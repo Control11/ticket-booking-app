@@ -1,6 +1,7 @@
 package com.ticket_booking_app.service;
 
 import com.ticket_booking_app.DTO.ReservationRequestGuestDTO;
+import com.ticket_booking_app.DTO.ReservationRespondDTO;
 import com.ticket_booking_app.DTO.view.MovieRepertoireView;
 import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.Reservation;
@@ -22,7 +23,7 @@ public interface IBooking {
 
     void validateReservationTime(ReservationRequestGuestDTO reservationRequestGuestDTO, LocalDateTime now);
 
-    Screening changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO);
+    void changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO);
 
-    Reservation createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO);
+    ReservationRespondDTO createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO);
 }

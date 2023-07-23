@@ -1,6 +1,7 @@
 package com.ticket_booking_app.service;
 
 import com.ticket_booking_app.DTO.ReservationRequestGuestDTO;
+import com.ticket_booking_app.DTO.ReservationRespondDTO;
 import com.ticket_booking_app.DTO.view.MovieRepertoireView;
 import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.*;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -22,7 +24,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @AllArgsConstructor
-@Transactional
 public class TicketBookingService implements IBooking {
 
     private MovieRepository movieRepository;
@@ -105,7 +106,7 @@ public class TicketBookingService implements IBooking {
     }
 
     @Override
-    public Screening changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO) {
+    public void changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         List<Seat> seats = reservationRequestGuestDTO.getSeats();
         List<ScreeningSeat> screeningSeats = screening.getScreeningSeat();
@@ -124,11 +125,11 @@ public class TicketBookingService implements IBooking {
                     });
         }
 
-        return screeningRepository.save(screening);
+        screeningRepository.save(screening);
     }
 
     @Override
-    public Reservation createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
+    public ReservationRespondDTO createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         List<Seat> seats = reservationRequestGuestDTO.getSeats();
         int reservationTimeMinutes = 15;
@@ -145,11 +146,21 @@ public class TicketBookingService implements IBooking {
         reservation.setScreening(screening);
         reservation.setSeat(seats);
         reservation.setTicket(tickets);
-        reservation.setExpirationDate(LocalDateTime.from(
-                Instant.now().plus(reservationTimeMinutes, ChronoUnit.MINUTES))
-        );
+        reservation.setExpirationDate(LocalDateTime.now().plus(reservationTimeMinutes, ChronoUnit.MINUTES));
 
-        return reservationRepository.save(reservation);
+        Reservation reservationDone = reservationRepository.save(reservation);
+        BigDecimal priceToPay = tickets.stream().map(Ticket::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new ReservationRespondDTO(
+                reservationDone.getId(),
+                reservationDone.getScreening().getRoomNumber(),
+                reservationDone.getScreening().getMovie().getTitle(),
+                reservationDone.getSeat(),
+                reservationDone.getTicket(),
+                reservationDone.getScreening().getDate(),
+                reservationDone.getScreening().getTime(),
+                reservationDone.getExpirationDate(),
+                priceToPay);
     }
 
 }

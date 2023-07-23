@@ -1,6 +1,7 @@
 package com.ticket_booking_app.DTO.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ticket_booking_app.model.utils.SeatStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,7 +25,7 @@ public interface MovieScreeningInfoView {
     interface ScreeningSeatView {
         int getId();
         SeatView getSeat();
-        String getStatus();
+        SeatStatus getStatus();
     }
 
     interface SeatView {

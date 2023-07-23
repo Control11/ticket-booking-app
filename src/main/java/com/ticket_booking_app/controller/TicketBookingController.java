@@ -1,9 +1,9 @@
 package com.ticket_booking_app.controller;
 
 import com.ticket_booking_app.DTO.ReservationRequestGuestDTO;
+import com.ticket_booking_app.DTO.ReservationRespondDTO;
 import com.ticket_booking_app.DTO.view.MovieRepertoireView;
 import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
-import com.ticket_booking_app.model.Reservation;
 import com.ticket_booking_app.service.IBooking;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ public class TicketBookingController {
     @PostMapping("/booking/reservation/guest")
     @ResponseBody
     @Transactional
-    public Reservation createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
+    public ReservationRespondDTO createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
         ticketBookingService.validateReservationTime(reservationRequestGuestDTO, LocalDateTime.now());
         ticketBookingService.validateSeatLocation(reservationRequestGuestDTO);
         ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
