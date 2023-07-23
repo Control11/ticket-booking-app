@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -25,7 +24,4 @@ public class ReservationRequestGuestDTO {
 
     @NotEmpty(message = "Reservation should have at least one seat selected")
     private List<Seat> seats;
-
-    @NotNull
-    private Instant expirationDateTime;
 }

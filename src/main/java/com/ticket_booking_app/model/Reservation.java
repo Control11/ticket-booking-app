@@ -3,7 +3,7 @@ package com.ticket_booking_app.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -27,6 +27,6 @@ public class Reservation {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ticket> ticket;
 
-    private Instant expirationDate;
+    private LocalDateTime expirationDate;
 
 }

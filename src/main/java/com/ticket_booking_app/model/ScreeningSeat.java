@@ -3,10 +3,14 @@ package com.ticket_booking_app.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ticket_booking_app.model.utils.SeatStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ScreeningSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
