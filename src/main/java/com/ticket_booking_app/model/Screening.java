@@ -29,7 +29,7 @@ public class Screening {
     @JsonManagedReference
     private List<ScreeningSeat> screeningSeat;
 
-    private int roomNumber;
+    private Integer roomNumber;
     private LocalDate date;
     private LocalTime time;
 }

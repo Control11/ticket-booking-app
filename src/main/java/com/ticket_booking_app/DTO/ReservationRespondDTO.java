@@ -14,8 +14,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ReservationRespondDTO {
-    private int id;
-    private int roomNumber;
+    private Integer id;
+    private String customerName;
+    private String customerSurname;
+    private Integer roomNumber;
     private String movieTitle;
     private List<Seat> seats;
     private List<Ticket> tickets;

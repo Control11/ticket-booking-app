@@ -1,6 +1,5 @@
 package com.ticket_booking_app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,23 +24,20 @@ public class Customer {
     @Length(min = 3, message = "Surname should be at least 3 characters long")
     private String surname;
 
-    @JsonIgnore
     @AssertTrue(message = "Name should starts with a capital letter")
     public boolean isNameValid() {
-        return  Character.isUpperCase(name.charAt(0));
+        return Character.isUpperCase(name.charAt(0));
     }
-    @JsonIgnore
+
     @AssertTrue(message = "Surname should starts with a capital letter")
     public boolean isSurnameValid() {
-//        if(Character.isUpperCase(surname.charAt(0))){
-//            if(surname.contains("_")){
-//                return Character.isUpperCase(surname.split("_")[1].charAt(0));
-//            }
-//            return true;
-//        }
-//        return false;
-        return  Character.isUpperCase(surname.charAt(0)) &&
-                surname.contains("_") ? Character.isUpperCase(surname.split("_")[1].charAt(0)) : true ;
+        if (Character.isUpperCase(surname.charAt(0))) {
+            if (surname.contains("_")) {
+                return Character.isUpperCase(surname.split("_")[1].charAt(0));
+            }
+            return true;
+        }
+        return false;
     }
 
 }

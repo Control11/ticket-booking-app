@@ -8,14 +8,16 @@ import com.ticket_booking_app.model.*;
 import com.ticket_booking_app.model.utils.SeatStatus;
 import com.ticket_booking_app.model.utils.TicketType;
 import com.ticket_booking_app.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +48,6 @@ public class TicketBookingService implements IBooking {
     public MovieScreeningInfoView getMovieScreeningInfo(int screeningId) {
         return movieRepository.findByScreeningId(screeningId);
     }
-
 
     @Override
     public void validateReservationTime(ReservationRequestGuestDTO reservationRequestGuestDTO, LocalDateTime now) {
@@ -100,7 +101,6 @@ public class TicketBookingService implements IBooking {
                         }
                     }
                 });
-
             }
         }
     }
@@ -124,7 +124,6 @@ public class TicketBookingService implements IBooking {
                         }
                     });
         }
-
         screeningRepository.save(screening);
     }
 
@@ -153,6 +152,8 @@ public class TicketBookingService implements IBooking {
 
         return new ReservationRespondDTO(
                 reservationDone.getId(),
+                reservationDone.getCustomer().getName(),
+                reservationDone.getCustomer().getSurname(),
                 reservationDone.getScreening().getRoomNumber(),
                 reservationDone.getScreening().getMovie().getTitle(),
                 reservationDone.getSeat(),
