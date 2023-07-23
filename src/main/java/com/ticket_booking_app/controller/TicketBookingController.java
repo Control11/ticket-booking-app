@@ -5,12 +5,14 @@ import com.ticket_booking_app.DTO.view.MovieRepertoireView;
 import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.Reservation;
 import com.ticket_booking_app.service.IBooking;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,12 +26,13 @@ public class TicketBookingController {
     }
 
     @GetMapping("/movies/{date}")
-    public List<MovieRepertoireView>  getMoviesByDate(
+    public List<MovieRepertoireView> getMoviesByDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate date) {
         return ticketBookingService.getMoviesByDate(date);
     }
+
     @GetMapping("/movies/{date}/{time}")
-    public List<MovieRepertoireView>  getMoviesByDateTime(
+    public List<MovieRepertoireView> getMoviesByDateTime(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate date,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) final LocalTime time) {
         return ticketBookingService.getMoviesByDateTime(date, time);
@@ -42,7 +45,12 @@ public class TicketBookingController {
 
     @PostMapping("/booking/reservation/guest")
     @ResponseBody
+    @Transactional
     public Reservation createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
+        ticketBookingService.validateReservationTime(reservationRequestGuestDTO, LocalDateTime.now());
+        ticketBookingService.validateSeatLocation(reservationRequestGuestDTO);
+        ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
+
         return ticketBookingService.createReservation(reservationRequestGuestDTO);
     }
 
