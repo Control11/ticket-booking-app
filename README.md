@@ -1,7 +1,16 @@
 # ticket-booking-app
 
-## Requirements
-PostgreSQL 15, Java 17, Maven 3.8.6
+## About application
+
+
+
+## Requirements and used tools
+Java 17, Spring-Boot 3.1.1, Lombok, Maven 3.8.6, PostgreSQL 15
+#### Modules
+Spring Web, Spring Data JPA
+#### Tests
+JUnit, AssertJ, Mockito
+
 
 ## Database
 Database was made using PostgreSQL. The diagram represents 6 main tables (Movie, Screening, Customer, Ticket, Seat, Reservation) and 3 association tables to reduce many-to-many relations (Reservation_ticket, Reservation_seat, Screening_seat). 
