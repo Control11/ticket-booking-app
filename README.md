@@ -46,3 +46,7 @@ mvn spring-boot:run
 2. reservation applies to at least one seat.
 3. There cannot be a single place left over in a row between two already reserved places.
 4. The system should properly handle Polish characters
+
+## Additional asumptions
+1. Customer's name and surname should only have one capital letter (apart from capital letter after '_' in surname).
+
