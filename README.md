@@ -29,38 +29,237 @@ mvn spring-boot:run
 
 ## Endpoints
 
-### Get movies by date request
+### 1. Get movies by date request
 ```bash
 localhost:8080/api/movies/2023-10-15
 ```
 This endpoint returns all movies at given date - 2023-10-15.
+### Respond
+```bash
+[
+    {
+        "id": 1,
+        "title": "Avengers: Endgame",
+        "screenings": [
+            {
+                "id": 1,
+                "time": "18:00:00",
+                "date": "2023-10-15"
+            },
+            {
+                "id": 6,
+                "time": "20:00:00",
+                "date": "2023-10-15"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "The Godfather",
+        "screenings": [
+            {
+                "id": 7,
+                "time": "18:30:00",
+                "date": "2023-10-15"
+            },
+            {
+                "id": 2,
+                "time": "20:30:00",
+                "date": "2023-10-15"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "The Shawshank Redemption",
+        "screenings": [
+            {
+                "id": 3,
+                "time": "15:45:00",
+                "date": "2023-10-15"
+            }
+        ]
+    }
+]
+```
 
 
-
-### Get movies by date and time request
+### 2. Get movies by date and time request
 ```bash
 localhost:8080/api/movies/2023-10-15/16:00
 ```
 This endpoint returns all movies at given date - 2023-10-15 - and after given time - 16:00.
+### Respond
+```bash
+[
+    {
+        "id": 1,
+        "title": "Avengers: Endgame",
+        "screenings": [
+            {
+                "id": 1,
+                "time": "18:00:00",
+                "date": "2023-10-15"
+            },
+            {
+                "id": 6,
+                "time": "20:00:00",
+                "date": "2023-10-15"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "The Godfather",
+        "screenings": [
+            {
+                "id": 7,
+                "time": "18:30:00",
+                "date": "2023-10-15"
+            },
+            {
+                "id": 2,
+                "time": "20:30:00",
+                "date": "2023-10-15"
+            }
+        ]
+    }
+]
+```
 
-
-### Get screening info request
+### 3. Get screening info request
 ```bash
 localhost:8080/api/booking/info/4
 ```
 This endpoint returns screening information at given id - 4. 
+### Respond
+```bash
+{
+    "id": 5,
+    "title": "The Dark Knight",
+    "screeningInfo": {
+        "id": 4,
+        "time": "19:15:00",
+        "date": "2023-10-16",
+        "screeningSeat": [
+            {
+                "id": 16,
+                "status": "BOUGHT",
+                "seat": {
+                    "number": 1,
+                    "row": "A"
+                }
+            },
+            {
+                "id": 17,
+                "status": "AVAILABLE",
+                "seat": {
+                    "number": 1,
+                    "row": "B"
+                }
+            },
+            {
+                "id": 18,
+                "status": "AVAILABLE",
+                "seat": {
+                    "number": 1,
+                    "row": "C"
+                }
+            },
+            {
+                "id": 19,
+                "status": "RESERVED",
+                "seat": {
+                    "number": 2,
+                    "row": "A"
+                }
+            },
+            {
+                "id": 20,
+                "status": "AVAILABLE",
+                "seat": {
+                    "number": 2,
+                    "row": "B"
+                }
+            }
+        ],
+        "roomNumber": 1
+    }
+}
+```
 
 
 
-### Create reservation request
+### 4. Create reservation request
 ```bash
 localhost:8080/api/booking/reservation/guest
 ```
-This endpoint creates reservation for given information in request body. 
+This endpoint creates reservation for given information in request body:
+```bash
+{
+    "screeningId": 1,
+    "customer": {
+        "name": "Łucja",
+        "surname": "Kudryś_Wolska"
+    },
+    "seats": [
+        {
+            "row": "B",
+            "number": 1
+        },
+        {
+            "row": "B",
+            "number": 2
+        }
+    ],
+    "ticketTypes": [
+        "CHILD",
+        "ADULT"
+    ]
+}
+```
+### Respond
+```bash
+{
+    "id": 11,
+    "customerName": "Łucja",
+    "customerSurname": "Kudryś_Wolska",
+    "roomNumber": 1,
+    "movieTitle": "Avengers: Endgame",
+    "seats": [
+        {
+            "id": 16,
+            "row": "B",
+            "number": 1
+        },
+        {
+            "id": 17,
+            "row": "B",
+            "number": 2
+        }
+    ],
+    "tickets": [
+        {
+            "id": 2,
+            "type": "CHILD",
+            "price": 12.50
+        },
+        {
+            "id": 1,
+            "type": "ADULT",
+            "price": 25.00
+        }
+    ],
+    "date": "2023-10-15",
+    "time": "18:00:00",
+    "expirationDate": "2023-07-24T13:30:19.6552544",
+    "priceToPay": 37.50
+}
+```
 
 
 ### Testing request
-To test requests You can use curl_request.bat that contains all 4 request endpoints.
+To test requests You can use curl_request.bat (src/main/resources/) that contains all 4 request endpoints.
 
 ## Business scenario (use case)
 1. The user selects the day and the time when he/she would like to see the movie.
@@ -84,4 +283,5 @@ To test requests You can use curl_request.bat that contains all 4 request endpoi
 
 ## Additional asumptions
 1. Customer's name and surname should only have one capital letter (apart from capital letter after '_' in surname).
+2. Amount of tickets should be the same as amount of seats in reservation request.
 
