@@ -27,6 +27,41 @@ To run this app You should use git clone command or download zip file with this 
 mvn spring-boot:run
 ```
 
+## Endpoints
+
+### Get movies by date request
+```bash
+localhost:8080/api/movies/2023-10-15
+```
+This endpoint returns all movies at given date - 2023-10-15.
+
+
+
+### Get movies by date and time request
+```bash
+localhost:8080/api/movies/2023-10-15/16:00
+```
+This endpoint returns all movies at given date - 2023-10-15 - and after given time - 16:00.
+
+
+### Get screening info request
+```bash
+localhost:8080/api/booking/info/4
+```
+This endpoint returns screening information at given id - 4. 
+
+
+
+### Create reservation request
+```bash
+localhost:8080/api/booking/reservation/guest
+```
+This endpoint creates reservation for given information in request body. 
+
+
+### Testing request
+To test requests You can use curl_request.bat that contains all 4 request endpoints.
+
 ## Business scenario (use case)
 1. The user selects the day and the time when he/she would like to see the movie.
 2. The system lists movies available in the given time interval - title and screening times.
