@@ -1,10 +1,7 @@
 package com.ticket_booking_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
+import com.ticket_booking_app.model.utils.TicketType;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,6 +13,8 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TicketType type;
     private BigDecimal price;
+
 }

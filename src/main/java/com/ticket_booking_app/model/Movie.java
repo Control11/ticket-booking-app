@@ -17,4 +17,5 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @OrderBy("time ASC")
     private List<Screening> screening;
+
 }

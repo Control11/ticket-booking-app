@@ -27,4 +27,5 @@ public class ScreeningSeat {
 
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
+
 }

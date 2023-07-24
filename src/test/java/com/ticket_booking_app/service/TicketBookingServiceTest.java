@@ -6,7 +6,7 @@ import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.model.ScreeningSeat;
 import com.ticket_booking_app.model.Seat;
 import com.ticket_booking_app.model.utils.SeatStatus;
-import com.ticket_booking_app.repository.*;
+import com.ticket_booking_app.repository.ScreeningRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,25 +42,24 @@ class TicketBookingServiceTest {
         reservationRequestGuestDTO.setScreeningId(1);
     }
 
-
     //Reservation time tests
     @Test
-    void shouldNotAllowsToBookAfterTimeLimit() {
+    void shouldNotAllowToBookAfterTimeLimit() {
         LocalTime screeningTime = LocalTime.of(12, 0, 0);
         LocalDate screeningDate = LocalDate.of(2023, 1, 1);
         LocalTime reservationTime = screeningTime.minus(15, ChronoUnit.MINUTES);
         LocalDateTime reservationDateTime = LocalDateTime.of(screeningDate, reservationTime);
 
-
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
-                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime)));
+                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime))
+        );
 
         assertThatThrownBy(() -> ticketBookingService.validateReservationTime(reservationRequestGuestDTO, reservationDateTime))
                 .hasMessageStartingWith("Wrong reservation time - reservation time exceeds reservation time limit - ");
     }
 
     @Test
-    void shouldNotAllowsToBookAfterDateOfScreening() {
+    void shouldNotAllowToBookAfterDateOfScreening() {
         LocalTime screeningTime = LocalTime.of(12, 0, 0);
         LocalDate screeningDate = LocalDate.of(2023, 1, 1);
         LocalDate reservationDate = screeningDate.plus(1, ChronoUnit.DAYS);
@@ -68,27 +67,29 @@ class TicketBookingServiceTest {
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
-                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime)));
+                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime))
+        );
 
         assertThatThrownBy(() -> ticketBookingService.validateReservationTime(reservationRequestGuestDTO, reservationDateTime))
                 .hasMessageStartingWith("Wrong reservation date - reservation date after screening date");
     }
 
     @Test
-    void shouldValidateReservationTimeWhenReservationDateEqualsScreeningDateAndReservationTimeDoesNotExceedTimeLimit() {
+    void shouldAllowToBookWhenReservationDateEqualsScreeningDateAndReservationTimeDoesNotExceedTimeLimit() {
         LocalTime screeningTime = LocalTime.of(12, 0, 0);
         LocalDate screeningDate = LocalDate.of(2023, 1, 1);
         LocalTime reservationTime = screeningTime.minus(20, ChronoUnit.MINUTES);
         LocalDateTime reservationDateTime = LocalDateTime.of(screeningDate, reservationTime);
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
-                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime)));
+                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime))
+        );
 
         assertDoesNotThrow(() -> ticketBookingService.validateReservationTime(reservationRequestGuestDTO, reservationDateTime));
     }
 
     @Test
-    void shouldValidateReservationTimeWhenReservationDateIsBeforeScreeningDate() {
+    void shouldAllowToBookWhenReservationDateIsBeforeScreeningDate() {
         LocalTime screeningTime = LocalTime.of(12, 0, 0);
         LocalDate screeningDate = LocalDate.of(2023, 1, 1);
         LocalTime reservationTime = screeningTime.minus(20, ChronoUnit.MINUTES);
@@ -96,7 +97,8 @@ class TicketBookingServiceTest {
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
-                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime)));
+                1, new Movie(), new ArrayList<>(), 1, screeningDate, screeningTime))
+        );
 
         assertDoesNotThrow(() -> ticketBookingService.validateReservationTime(reservationRequestGuestDTO, reservationDateTime));
     }
@@ -104,7 +106,7 @@ class TicketBookingServiceTest {
 
     //Reservation seats tests
     @Test
-    void shouldValidateIfThereIsNoSeatBetweenTwoReservedSeats() {
+    void shouldAllowToBookWhenThereIsNotOnlyOneSeatAvailableBetweenTwoReservedSeats() {
         Screening screening = new Screening();
         String row = "A";
 
@@ -124,16 +126,16 @@ class TicketBookingServiceTest {
                 new ScreeningSeat(1, screening, seats.get(5), SeatStatus.AVAILABLE) //SeatStatus.RESERVED
         );
 
-
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
                 1, new Movie(), screeningSeats, 1,
-                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0))));
+                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0)))
+        );
 
         assertDoesNotThrow(() -> ticketBookingService.validateSeatLocation(reservationRequestGuestDTO));
     }
 
     @Test
-    void shouldNotValidateWhenThereIsAvailableSeatBetweenTwoReservedSeats() {
+    void shouldNotAllowToBookWhenThereIsOnlyOneAvailableSeatBetweenTwoReservedSeats() {
         Screening screening = new Screening();
         String row = "A";
 
@@ -153,10 +155,10 @@ class TicketBookingServiceTest {
                 new ScreeningSeat(1, screening, seats.get(5), SeatStatus.AVAILABLE) //SeatStatus.RESERVED
         );
 
-
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening(
                 1, new Movie(), screeningSeats, 1,
-                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0))));
+                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0)))
+        );
 
         assertThatThrownBy(() -> ticketBookingService.validateSeatLocation(reservationRequestGuestDTO))
                 .hasMessageContaining("There cannot be a single place left over in a row between two already reserved places: ");
@@ -195,12 +197,13 @@ class TicketBookingServiceTest {
 
 
         Screening screeningDB = new Screening(1, new Movie(), screeningSeatsDB, 1,
-                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0));
+                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0)
+        );
 
 
         Screening screeningExpected = new Screening(1, new Movie(), screeningSeatsExpected, 1,
-                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0));
-
+                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0)
+        );
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(screeningDB));
         ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
@@ -209,7 +212,7 @@ class TicketBookingServiceTest {
     }
 
     @Test
-    void shouldNotValidateChangingSeatStatusWhenSeatsAreAlreadyReservedOrBought() {
+    void shouldNotAllowToChangeSeatStatusWhenSeatIsAlreadyReservedOrBought() {
         Screening screening = new Screening();
         String row = "A";
 
@@ -230,7 +233,8 @@ class TicketBookingServiceTest {
         );
 
         Screening screeningDB = new Screening(1, new Movie(), screeningSeatsDB, 1,
-                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0));
+                LocalDate.of(2023, 1, 1), LocalTime.of(12, 0, 0)
+        );
 
         when(screeningRepository.findById(any())).thenReturn(Optional.of(screeningDB));
 

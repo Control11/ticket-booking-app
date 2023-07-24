@@ -7,7 +7,6 @@ import lombok.Data;
 @Entity
 @Data
 public class ReservationSeat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

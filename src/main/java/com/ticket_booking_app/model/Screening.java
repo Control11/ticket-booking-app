@@ -32,4 +32,5 @@ public class Screening {
     private Integer roomNumber;
     private LocalDate date;
     private LocalTime time;
+
 }

@@ -24,4 +24,5 @@ public class Seat {
     private String row;
     @NotNull
     private Integer number;
+
 }

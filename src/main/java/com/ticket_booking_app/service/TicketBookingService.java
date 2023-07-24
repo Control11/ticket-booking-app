@@ -135,7 +135,7 @@ public class TicketBookingService implements IBooking {
 
         List<Ticket> tickets = new ArrayList<>();
         for (TicketType ticketType : reservationRequestGuestDTO.getTicketTypes()) {
-            tickets.add(ticketRepository.findByType(ticketType.name()));
+            tickets.add(ticketRepository.findByType(ticketType));
         }
 
         Customer customer = customerRepository.save(reservationRequestGuestDTO.getCustomer());
