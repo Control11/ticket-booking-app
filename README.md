@@ -4,16 +4,28 @@
 PostgreSQL 15, Java 17, Maven 3.8.6
 
 ## Database
-Database was made using PostgreSQL 15. The diagram represents 6 main tables (Movie, Screening, Customer, Ticket, Seat, Reservation) and 3 association tables to reduce many-to-many relations (Reservation_ticket, Reservation_seat, Screening_seat). 
+Database was made using PostgreSQL. The diagram represents 6 main tables (Movie, Screening, Customer, Ticket, Seat, Reservation) and 3 association tables to reduce many-to-many relations (Reservation_ticket, Reservation_seat, Screening_seat). 
 
 ![DB_model](https://github.com/Control11/ticket-booking-app/assets/84398641/91317b5a-6781-49f1-b139-972142d87d16)
-
-Script to build database structure and fill it with sample data is located at src/main/resources/ directory - DB_create_insert_script.sql file.
 
 DISCLAIMER:
 
 The data included in this file is purely fictional and does not pertain to any specific individual. Any resemblance to real persons is purely coincidental. The names, surnames and any other information presented within this file are entirely random. This data is provided for illustrative purposes only and should not be used or interpreted as representative of any person or entity.
 
+## Usage
+First of all, You need to create database. Script to build database structure and fill it with sample data is located at src/main/resources/ directory - all_DB_scripts.sql file. After that, it is necessary to add appropiate configuration to application.properties file. If needed change only those parameters values:
+
+```bash
+spring.datasource.url=jdbc:postgresql://localhost:5432/ticket-booking-app
+spring.datasource.username=postgres
+spring.datasource.password=admin
+```
+
+To run this app You should use git clone command or download zip file with this project and extract it. After that open Command Line at project directory and run application using this command:
+
+```bash
+mvn spring-boot:run
+```
 
 ## Business scenario (use case)
 1. The user selects the day and the time when he/she would like to see the movie.
