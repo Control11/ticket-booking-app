@@ -290,7 +290,7 @@ To test requests You can use curl_request.bat (src/main/resources/) that contain
 3. There cannot be a single place left over in a row between two already reserved places.
 4. The system should properly handle Polish characters
 
-## Additional asumptions
+## Additional assumptions
 1. Customer's name and surname should only have one capital letter (apart from capital letter after '_' in surname).
 2. Amount of tickets should be the same as amount of seats in reservation request.
 
