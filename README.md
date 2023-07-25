@@ -1,7 +1,7 @@
 # ticket-booking-app
 
 ## About application
-This application represents basic seats booking system for movies in cinema. Project was made based on the following instructions:
+This application represents basic seat booking system for movies in cinema. Project was made based on the following instructions:
 ### Business scenario (use case)
 1. The user selects the day and the time when he/she would like to see the movie.
 2. The system lists movies available in the given time interval - title and screening times.
