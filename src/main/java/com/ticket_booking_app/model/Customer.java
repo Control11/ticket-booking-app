@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Collections;
+
 @Entity
 @Data
 public class Customer {
@@ -47,9 +49,11 @@ public class Customer {
     public boolean isSurnameValid() {
         char[] surnameLetters = surname.toCharArray();
         boolean isValid = false;
+        int underscore_counter = 0;
 
         for (int i = 0; i < surnameLetters.length; i++) {
             if(surnameLetters[i] == '_' && i !=0){
+                underscore_counter += 1;
                 isValid = Character.isUpperCase(surnameLetters[++i]);
             }else if(i != 0){
                 isValid = Character.isLowerCase(surnameLetters[i]);
@@ -57,8 +61,8 @@ public class Customer {
                 isValid = Character.isUpperCase(surnameLetters[i]);
             }
 
-            if(!isValid){
-                return isValid;
+            if(!isValid || underscore_counter > 1){
+                return false;
             }
         }
 

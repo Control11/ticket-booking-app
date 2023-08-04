@@ -21,10 +21,10 @@ public class Reservation {
     @JoinColumn(name = "screening_id", nullable = false)
     private Screening screening;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Seat> Seat;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Ticket> ticket;
 
     private LocalDateTime expirationDate;

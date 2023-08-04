@@ -4,19 +4,22 @@ import com.ticket_booking_app.model.ScreeningSeat;
 import com.ticket_booking_app.model.Seat;
 import com.ticket_booking_app.model.utils.SeatStatus;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SeatLocationValidator {
     public static void validateSeatLocation(List<Seat> seats, List<ScreeningSeat> screeningSeats) {
         Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
         screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
-
         seats.forEach(seat -> seatWithScreeningSeat.get(seat).setStatus(SeatStatus.RESERVED));
 
         for (Seat seat : seats) {
             Integer seatNumber = seat.getNumber();
-            Map<Integer, SeatStatus> neighbors = getNeighbors(seat, screeningSeats);
+            Set<Integer> neighborsNumbers = Set.of(seatNumber + 1, seatNumber + 2, seatNumber - 1, seatNumber - 2);
+            Map<Integer, SeatStatus> neighbors = getNeighborsStatus(screeningSeats, seat.getRow(), neighborsNumbers);
 
             SeatStatus firstSeatFromLeft = neighbors.getOrDefault(seatNumber - 1, SeatStatus.AVAILABLE);
             SeatStatus secondSeatFromLeft = neighbors.getOrDefault(seatNumber - 2, SeatStatus.AVAILABLE);
@@ -30,12 +33,9 @@ public class SeatLocationValidator {
         }
     }
 
-    private static Map<Integer, SeatStatus> getNeighbors(Seat seat, List<ScreeningSeat> screeningSeats) {
-        String row = seat.getRow();
-        List<Integer> neighbors = List.of(seat.getNumber() + 1, seat.getNumber() + 2, seat.getNumber() - 1, seat.getNumber() - 2);
-
+    private static Map<Integer, SeatStatus> getNeighborsStatus(List<ScreeningSeat> screeningSeats, String row, Set<Integer> neighborsNumbers) {
         return screeningSeats.stream()
-                .filter(screeningSeat -> screeningSeat.getSeat().getRow().equals(row) && neighbors.contains(screeningSeat.getSeat().getNumber()))
+                .filter(screeningSeat -> screeningSeat.getSeat().getRow().equals(row) && neighborsNumbers.contains(screeningSeat.getSeat().getNumber()))
                 .collect(Collectors.toMap(screeningSeat -> screeningSeat.getSeat().getNumber(), ScreeningSeat::getStatus));
     }
 }
