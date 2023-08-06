@@ -51,8 +51,8 @@ public class TicketBookingService {
         int reservationTimeLimit = 15;
 
         reservationUtils.validateReservationTime(screening, LocalDateTime.now(), reservationTimeLimit);
-        reservationUtils.validateSeatLocation(reservationRequestGuestDTO.getSeats(), screening.getScreeningSeat());
         reservationUtils.changeSeatStatus(screening.getScreeningSeat(), reservationRequestGuestDTO.getSeats());
+        reservationUtils.validateSeatLocation(reservationRequestGuestDTO.getSeats(), screening.getScreeningSeat());
 
         screeningRepository.save(screening);
 

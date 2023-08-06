@@ -16,7 +16,6 @@ public class ReservationUtils {
     public void validateSeatLocation(List<Seat> seats, List<ScreeningSeat> screeningSeats) {
         Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
         screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
-        seats.forEach(seat -> seatWithScreeningSeat.get(seat).setStatus(SeatStatus.RESERVED));
 
         for (Seat seat : seats) {
             Integer seatNumber = seat.getNumber();

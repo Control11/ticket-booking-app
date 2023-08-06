@@ -41,7 +41,6 @@ class TicketBookingServiceTest {
     @Test
     void shouldNotAllowToCreateReservationWhenSeatLocationIsNotValid() {
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening()));
-        doNothing().when(reservationUtils).validateReservationTime(any(), any(), any());
         doThrow(new RuntimeException("There cannot be a single place left over in a row between two already reserved places: "))
                 .when(reservationUtils).validateSeatLocation(any(), any());
 
@@ -53,8 +52,6 @@ class TicketBookingServiceTest {
     @Test
     void shouldNotAllowToCreateReservationWhenSeatsAreAlreadyReservedOrBought() {
         when(screeningRepository.findById(any())).thenReturn(Optional.of(new Screening()));
-        doNothing().when(reservationUtils).validateReservationTime(any(), any(), any());
-        doNothing().when(reservationUtils).validateSeatLocation(any(), any());
         doThrow(new RuntimeException("This seat is already reserved/bought: "))
                 .when(reservationUtils).changeSeatStatus(any(), any());
 
