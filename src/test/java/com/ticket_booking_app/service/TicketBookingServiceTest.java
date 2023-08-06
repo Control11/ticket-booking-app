@@ -1,6 +1,6 @@
 package com.ticket_booking_app.service;
 
-import com.ticket_booking_app.DTO.ReservationRequestGuestDTO;
+import com.ticket_booking_app.dto.ReservationRequestGuestDTO;
 import com.ticket_booking_app.model.Movie;
 import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.model.ScreeningSeat;
