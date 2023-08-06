@@ -1,4 +1,4 @@
-package com.ticket_booking_app.DTO.view;
+package com.ticket_booking_app.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

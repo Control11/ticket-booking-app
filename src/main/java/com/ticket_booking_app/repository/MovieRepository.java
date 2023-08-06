@@ -1,7 +1,7 @@
 package com.ticket_booking_app.repository;
 
-import com.ticket_booking_app.DTO.view.MovieRepertoireView;
-import com.ticket_booking_app.DTO.view.MovieScreeningInfoView;
+import com.ticket_booking_app.dto.view.MovieRepertoireView;
+import com.ticket_booking_app.dto.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

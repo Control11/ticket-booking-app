@@ -1,4 +1,4 @@
-package com.ticket_booking_app.DTO;
+package com.ticket_booking_app.dto;
 
 import com.ticket_booking_app.model.Seat;
 import com.ticket_booking_app.model.Ticket;
