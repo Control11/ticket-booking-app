@@ -7,14 +7,13 @@ import com.ticket_booking_app.dto.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.*;
 import com.ticket_booking_app.model.utils.SeatStatus;
 import com.ticket_booking_app.repository.*;
-import com.ticket_booking_app.validator.SeatLocationValidator;
+import com.ticket_booking_app.validator.ReservationValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,49 +49,14 @@ public class TicketBookingService {
         return movieRepository.findByScreeningId(screeningId);
     }
 
-    public void validateReservationTime(ReservationRequestGuestDTO reservationRequestGuestDTO, LocalDateTime now) {
-        Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
-        int reservationTimeLimit = 15;
-
-        if (now.toLocalDate().isEqual(screening.getDate())) {
-            if (Duration.between(now.toLocalTime(), screening.getTime()).toMinutes() <= reservationTimeLimit) {
-                throw new RuntimeException(String.format("Wrong reservation time - reservation time exceeds reservation time limit - limit: %d minutes, exceeding: %d minutes",
-                        reservationTimeLimit, Duration.between(now.toLocalTime(), screening.getTime()).toMinutes()));
-            }
-        } else if (now.isAfter(LocalDateTime.of(screening.getDate(), screening.getTime()))) {
-            throw new RuntimeException("Wrong reservation date - reservation date after screening date");
-        }
-    }
-
-    public void validateSeatLocation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
-        Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
-        SeatLocationValidator.validateSeatLocation(reservationRequestGuestDTO.getSeats(), screening.getScreeningSeat());
-    }
-
-    public void changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO) {
-        Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
-        List<Seat> seats = reservationRequestGuestDTO.getSeats();
-        List<ScreeningSeat> screeningSeats = screening.getScreeningSeat();
-        seats.forEach(seat -> seat.setRow(seat.getRow().toUpperCase(Locale.ROOT).trim()));
-
-        Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
-        screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
-
-        for (Seat seat : seats) {
-            ScreeningSeat screeningSeatToReserve = seatWithScreeningSeat.get(seat);
-            if (screeningSeatToReserve.getStatus().equals(SeatStatus.AVAILABLE)) {
-                screeningSeatToReserve.setStatus(SeatStatus.RESERVED);
-            } else {
-                throw new RuntimeException("This seat is already reserved/bought: " + seat);
-            }
-        }
-
-        screeningRepository.save(screening);
-    }
-
     public ReservationRespondDTO createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         int reservationTimeMinutes = 15;
+        int reservationTimeLimit = 15;
+
+        ReservationValidator.validateReservationTime(screening, LocalDateTime.now(), reservationTimeLimit);
+        ReservationValidator.validateSeatLocation(reservationRequestGuestDTO.getSeats(), screening.getScreeningSeat());
+        changeSeatStatus(screening, reservationRequestGuestDTO.getSeats());
 
         List<Ticket> tickets = reservationRequestGuestDTO.getTicketTypes()
                 .stream()
@@ -115,6 +79,7 @@ public class TicketBookingService {
 
         Reservation reservationDone = reservationRepository.save(reservation);
         BigDecimal priceToPay = tickets.stream().map(Ticket::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+
         ReservationRespondDTO rdto = new ReservationRespondDTO(
                 reservationDone.getId(),
                 reservationDone.getCustomer().getName(),
@@ -129,8 +94,27 @@ public class TicketBookingService {
                 priceToPay);
 
 //        reservationRepository.delete(reservation);
-
         return rdto;
+    }
+
+
+    private void changeSeatStatus(Screening screening, List<Seat> seats) {
+        List<ScreeningSeat> screeningSeats = screening.getScreeningSeat();
+        seats.forEach(seat -> seat.setRow(seat.getRow().toUpperCase(Locale.ROOT).trim()));
+
+        Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
+        screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
+
+        for (Seat seat : seats) {
+            ScreeningSeat screeningSeatToReserve = seatWithScreeningSeat.get(seat);
+            if (screeningSeatToReserve.getStatus().equals(SeatStatus.AVAILABLE)) {
+                screeningSeatToReserve.setStatus(SeatStatus.RESERVED);
+            } else {
+                throw new RuntimeException("This seat is already reserved/bought: " + seat);
+            }
+        }
+
+        screeningRepository.save(screening);
     }
 
 }

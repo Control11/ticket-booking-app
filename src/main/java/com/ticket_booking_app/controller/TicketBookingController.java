@@ -48,10 +48,6 @@ public class TicketBookingController {
     @ResponseBody
     @Transactional
     public ReservationRespondDTO createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
-        ticketBookingService.validateReservationTime(reservationRequestGuestDTO, LocalDateTime.now());
-        ticketBookingService.validateSeatLocation(reservationRequestGuestDTO);
-        ticketBookingService.changeSeatStatus(reservationRequestGuestDTO);
-
         return ticketBookingService.createReservation(reservationRequestGuestDTO);
     }
 
