@@ -4,10 +4,9 @@ import com.ticket_booking_app.dto.ReservationRequestGuestDTO;
 import com.ticket_booking_app.dto.ReservationRespondDTO;
 import com.ticket_booking_app.dto.view.MovieRepertoireView;
 import com.ticket_booking_app.dto.view.MovieScreeningInfoView;
-import com.ticket_booking_app.service.IBooking;
+import com.ticket_booking_app.service.TicketBookingService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,9 @@ import java.util.List;
 @RequestMapping("/api")
 @Validated
 public class TicketBookingController {
-    private final IBooking ticketBookingService;
+    private final TicketBookingService ticketBookingService;
 
-    public TicketBookingController(@Qualifier("ticketBookingService") final IBooking ticketBookingService) {
+    public TicketBookingController(final TicketBookingService ticketBookingService) {
         this.ticketBookingService = ticketBookingService;
     }
 

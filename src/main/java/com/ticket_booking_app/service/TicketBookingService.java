@@ -19,14 +19,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Getter
 @Setter
 @AllArgsConstructor
-public class TicketBookingService implements IBooking {
+public class TicketBookingService {
 
     private MovieRepository movieRepository;
     private ReservationRepository reservationRepository;
@@ -35,22 +38,18 @@ public class TicketBookingService implements IBooking {
     private TicketRepository ticketRepository;
     private SeatRepository seatRepository;
 
-    @Override
     public List<MovieRepertoireView> getMoviesByDate(LocalDate date) {
         return movieRepository.findByScreeningDateOrderByTitle(date);
     }
 
-    @Override
     public List<MovieRepertoireView> getMoviesByDateTime(LocalDate date, LocalTime time) {
         return movieRepository.findByScreeningDateAndScreeningTimeGreaterThanEqualOrderByTitle(date, time);
     }
 
-    @Override
     public MovieScreeningInfoView getMovieScreeningInfo(int screeningId) {
         return movieRepository.findByScreeningId(screeningId);
     }
 
-    @Override
     public void validateReservationTime(ReservationRequestGuestDTO reservationRequestGuestDTO, LocalDateTime now) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         int reservationTimeLimit = 15;
@@ -65,14 +64,11 @@ public class TicketBookingService implements IBooking {
         }
     }
 
-    @Override
     public void validateSeatLocation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         SeatLocationValidator.validateSeatLocation(reservationRequestGuestDTO.getSeats(), screening.getScreeningSeat());
     }
 
-
-    @Override
     public void changeSeatStatus(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         List<Seat> seats = reservationRequestGuestDTO.getSeats();
@@ -94,7 +90,6 @@ public class TicketBookingService implements IBooking {
         screeningRepository.save(screening);
     }
 
-    @Override
     public ReservationRespondDTO createReservation(ReservationRequestGuestDTO reservationRequestGuestDTO) {
         Screening screening = screeningRepository.findById(reservationRequestGuestDTO.getScreeningId()).orElseThrow();
         int reservationTimeMinutes = 15;
