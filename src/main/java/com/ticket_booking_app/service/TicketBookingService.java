@@ -6,7 +6,7 @@ import com.ticket_booking_app.dto.view.MovieRepertoireView;
 import com.ticket_booking_app.dto.view.MovieScreeningInfoView;
 import com.ticket_booking_app.model.*;
 import com.ticket_booking_app.repository.*;
-import com.ticket_booking_app.validator.ReservationUtils;
+import com.ticket_booking_app.service.utils.ReservationUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

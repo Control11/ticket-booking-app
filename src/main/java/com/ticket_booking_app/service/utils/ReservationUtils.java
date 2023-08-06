@@ -1,4 +1,4 @@
-package com.ticket_booking_app.validator;
+package com.ticket_booking_app.service.utils;
 
 import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.model.ScreeningSeat;

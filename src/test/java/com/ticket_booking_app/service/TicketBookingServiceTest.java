@@ -3,7 +3,7 @@ package com.ticket_booking_app.service;
 import com.ticket_booking_app.dto.ReservationRequestGuestDTO;
 import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.repository.ScreeningRepository;
-import com.ticket_booking_app.validator.ReservationUtils;
+import com.ticket_booking_app.service.utils.ReservationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
