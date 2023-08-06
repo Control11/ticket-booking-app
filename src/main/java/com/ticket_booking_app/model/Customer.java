@@ -9,8 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.Collections;
-
 @Entity
 @Data
 public class Customer {
@@ -29,44 +27,43 @@ public class Customer {
     @AssertTrue(message = "Name should start with a capital letter and rest of the letters should be lower case type")
     public boolean isNameValid() {
         char[] nameLetters = name.toCharArray();
-        boolean isValid = false;
 
         for (int i = 0; i < nameLetters.length; i++) {
-            if(i != 0){
-                isValid = Character.isLowerCase(nameLetters[i]);
-            }else {
-                isValid = Character.isUpperCase(nameLetters[i]);
-            }
-
-            if(!isValid){
-                return isValid;
+            if (i != 0) {
+                if (!Character.isLowerCase(nameLetters[i])) {
+                    return false;
+                }
+            } else {
+                if (!Character.isUpperCase(nameLetters[i])) {
+                    return false;
+                }
             }
         }
-        return isValid;
+        return true;
     }
 
     @AssertTrue(message = "Surname should start with a capital letter and rest of the letters should be lower case type")
     public boolean isSurnameValid() {
         char[] surnameLetters = surname.toCharArray();
-        boolean isValid = false;
         int underscore_counter = 0;
 
         for (int i = 0; i < surnameLetters.length; i++) {
-            if(surnameLetters[i] == '_' && i !=0){
+            if (surnameLetters[i] == '_' && i != 0) {
                 underscore_counter += 1;
-                isValid = Character.isUpperCase(surnameLetters[++i]);
-            }else if(i != 0){
-                isValid = Character.isLowerCase(surnameLetters[i]);
-            }else {
-                isValid = Character.isUpperCase(surnameLetters[i]);
-            }
-
-            if(!isValid || underscore_counter > 1){
-                return false;
+                if (!Character.isUpperCase(surnameLetters[++i]) || underscore_counter > 1) {
+                    return false;
+                }
+            } else if (i != 0) {
+                if (!Character.isLowerCase(surnameLetters[i])) {
+                    return false;
+                }
+            } else {
+                if (!Character.isUpperCase(surnameLetters[i])) {
+                    return false;
+                }
             }
         }
-
-        return isValid;
+        return true;
     }
 
 }
