@@ -1,21 +1,19 @@
 package com.ticket_booking_app.validator;
 
-import com.ticket_booking_app.dto.ReservationRequestGuestDTO;
 import com.ticket_booking_app.model.Screening;
 import com.ticket_booking_app.model.ScreeningSeat;
 import com.ticket_booking_app.model.Seat;
 import com.ticket_booking_app.model.utils.SeatStatus;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class ReservationValidator {
-    public static void validateSeatLocation(List<Seat> seats, List<ScreeningSeat> screeningSeats) {
+@Component
+public class ReservationUtils {
+    public void validateSeatLocation(List<Seat> seats, List<ScreeningSeat> screeningSeats) {
         Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
         screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
         seats.forEach(seat -> seatWithScreeningSeat.get(seat).setStatus(SeatStatus.RESERVED));
@@ -37,7 +35,7 @@ public class ReservationValidator {
         }
     }
 
-    public static void validateReservationTime(Screening screening, LocalDateTime now, Integer reservationTimeLimit) {
+    public void validateReservationTime(Screening screening, LocalDateTime now, Integer reservationTimeLimit) {
         if (now.toLocalDate().isEqual(screening.getDate())) {
             if (Duration.between(now.toLocalTime(), screening.getTime()).toMinutes() <= reservationTimeLimit) {
                 throw new RuntimeException(String.format("Wrong reservation time - reservation time exceeds reservation time limit - limit: %d minutes, exceeding: %d minutes",
@@ -45,6 +43,22 @@ public class ReservationValidator {
             }
         } else if (now.isAfter(LocalDateTime.of(screening.getDate(), screening.getTime()))) {
             throw new RuntimeException("Wrong reservation date - reservation date after screening date");
+        }
+    }
+
+    public void changeSeatStatus(List<ScreeningSeat> screeningSeats, List<Seat> seats) {
+        seats.forEach(seat -> seat.setRow(seat.getRow().toUpperCase(Locale.ROOT).trim()));
+
+        Map<Seat, ScreeningSeat> seatWithScreeningSeat = new HashMap<>();
+        screeningSeats.forEach(screeningSeat -> seatWithScreeningSeat.put(screeningSeat.getSeat(), screeningSeat));
+
+        for (Seat seat : seats) {
+            ScreeningSeat screeningSeatToReserve = seatWithScreeningSeat.get(seat);
+            if (screeningSeatToReserve.getStatus().equals(SeatStatus.AVAILABLE)) {
+                screeningSeatToReserve.setStatus(SeatStatus.RESERVED);
+            } else {
+                throw new RuntimeException("This seat is already reserved/bought: " + seat);
+            }
         }
     }
 
