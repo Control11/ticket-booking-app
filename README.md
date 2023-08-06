@@ -265,12 +265,12 @@ This endpoint creates reservation for given information in request body:
     "movieTitle": "Avengers: Endgame",
     "seats": [
         {
-            "id": 16,
+            "id": 2,
             "row": "B",
             "number": 1
         },
         {
-            "id": 17,
+            "id": 5,
             "row": "B",
             "number": 2
         }
