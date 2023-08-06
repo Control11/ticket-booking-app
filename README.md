@@ -17,7 +17,7 @@ This application represents basic seat booking system for movies in cinema. Proj
 4. There are three ticket types: ADULT (25 PLN), STUDENT (18 PLN), CHILD (12.50 PLN).
 
 ### Business requirements
-1. name and surname should each be at least three characters long, starting with a capital letter. The surname could consist of two parts separated with a single dash, in this case the second part should also start with a capital letter.
+1. name and surname should each be at least three characters long, starting with a capital letter. The surname could consist of two parts separated with a single underscore, in this case the second part should also start with a capital letter.
 2. reservation applies to at least one seat.
 3. There cannot be a single place left over in a row between two already reserved places.
 4. The system should properly handle Polish characters
