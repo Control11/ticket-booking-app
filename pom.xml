@@ -11,7 +11,7 @@
     <groupId>com</groupId>
     <artifactId>ticket_booking_app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ticket_booking_app</name>
     <description>ticket_booking_app</description>
     <properties>
