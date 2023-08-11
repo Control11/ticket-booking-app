@@ -17,8 +17,8 @@ This application represents basic seat booking system for movies in cinema. Proj
 4. There are three ticket types: ADULT (25 PLN), STUDENT (18 PLN), CHILD (12.50 PLN).
 
 ### Business requirements
-1. name and surname should each be at least three characters long, starting with a capital letter. The surname could consist of two parts separated with a single underscore, in this case the second part should also start with a capital letter.
-2. reservation applies to at least one seat.
+1. Name and surname should each be at least three characters long, starting with a capital letter. The surname could consist of two parts separated with a single underscore, in this case the second part should also start with a capital letter.
+2. Reservation applies to at least one seat.
 3. There cannot be a single place left over in a row between two already reserved places.
 4. The system should properly handle Polish characters
 
@@ -29,7 +29,7 @@ This application represents basic seat booking system for movies in cinema. Proj
 
 
 ## Requirements and used tools
-Java 17, Spring-Boot 3.1.1, Lombok, Maven 3.8.6, PostgreSQL 15
+Docker, Java 17, Spring-Boot 3.1.1, Lombok, Maven 3.8.6, PostgreSQL 15
 #### Modules
 Spring Web, Spring Data JPA
 #### Tests
@@ -44,6 +44,20 @@ Database was made using PostgreSQL. The diagram represents 6 main tables (Movie,
 
 
 ## Usage
+### 1. Run with Docker
+To run this app You should use `git clone` command or download zip file with this project and extract it. After that open Command Line at project directory and run application using this command:
+
+```
+docker-compose up
+```
+This will create two Docker containers (application and database). Database is initialized with already created structure and filled with sample data. 
+
+To remove containers use command:
+
+```
+docker-compose down
+```
+### 2. Run locally
 First of all, You need to create database. Script to build database structure and fill it with sample data is located at src/main/resources/ directory - all_DB_scripts.sql file. 
 
 DISCLAIMER:
@@ -52,27 +66,27 @@ The data included in this file is purely fictional and does not pertain to any s
 
 After that, it is necessary to add appropiate configuration to application.properties file. Change only those parameters values if needed:
 
-```bash
+```
 spring.datasource.url=jdbc:postgresql://localhost:5432/ticket-booking-app
 spring.datasource.username=postgres
 spring.datasource.password=admin
 ```
 
-To run this app You should use git clone command or download zip file with this project and extract it. After that open Command Line at project directory and run application using this command:
+To run this app You should use `git clone` command or download zip file with this project and extract it. After that open Command Line at project directory and run application using this command:
 
-```bash
+```
 mvn spring-boot:run
 ```
 
 ## Endpoints
 
 ### 1. Get movies by date request
-```bash
+```
 localhost:8080/api/movies/2023-10-15
 ```
 This endpoint returns all movies at given date - 2023-10-15.
 ### Respond
-```bash
+```json
 [
     {
         "id": 1,
@@ -122,12 +136,12 @@ This endpoint returns all movies at given date - 2023-10-15.
 
 
 ### 2. Get movies by date and time request
-```bash
+```
 localhost:8080/api/movies/2023-10-15/16:00
 ```
 This endpoint returns all movies at given date - 2023-10-15 - and after given time - 16:00.
 ### Respond
-```bash
+```json
 [
     {
         "id": 1,
@@ -165,12 +179,12 @@ This endpoint returns all movies at given date - 2023-10-15 - and after given ti
 ```
 
 ### 3. Get screening info request
-```bash
+```
 localhost:8080/api/booking/info/4
 ```
 This endpoint returns screening information at given id - 4. 
 ### Respond
-```bash
+```json
 {
     "id": 5,
     "title": "The Dark Knight",
@@ -228,11 +242,11 @@ This endpoint returns screening information at given id - 4.
 
 
 ### 4. Create reservation request
-```bash
+```
 localhost:8080/api/booking/reservation/guest
 ```
 This endpoint creates reservation for given information in request body:
-```bash
+```json
 {
     "screeningId": 1,
     "customer": {
@@ -256,7 +270,7 @@ This endpoint creates reservation for given information in request body:
 }
 ```
 ### Respond
-```bash
+```json
 {
     "id": 11,
     "customerName": "Łucja",
