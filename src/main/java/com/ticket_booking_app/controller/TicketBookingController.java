@@ -44,7 +44,6 @@ public class TicketBookingController {
     }
 
     @PostMapping("/booking/reservation/guest")
-    @ResponseBody
     @Transactional
     public ReservationRespondDTO createReservation(@Valid @RequestBody final ReservationRequestGuestDTO reservationRequestGuestDTO) {
         return ticketBookingService.createReservation(reservationRequestGuestDTO);
