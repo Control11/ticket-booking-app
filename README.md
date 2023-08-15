@@ -49,10 +49,12 @@ To run this app You should use `git clone` command or download zip file with thi
 ```bash
 mvn clean package -DskipTests
 ```
-After that run app using: 
+
+Then run app using: 
 ```
 docker-compose up
 ```
+
 This will create two Docker containers (application and database). Database is initialized with already created structure and filled with sample data. 
 
 To remove containers use command:
