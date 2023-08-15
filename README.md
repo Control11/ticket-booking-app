@@ -45,8 +45,11 @@ Database was made using PostgreSQL. The diagram represents 6 main tables (Movie,
 
 ## Usage
 ### 1. Run with Docker
-To run this app You should use `git clone` command or download zip file with this project and extract it. After that open Command Line at project directory and run application using this command:
-
+To run this app You should use `git clone` command or download zip file with this project and extract it. After that open Command Line at project directory and build application using this command:
+```bash
+mvn clean package -DskipTests
+```
+After that run app using: 
 ```
 docker-compose up
 ```
